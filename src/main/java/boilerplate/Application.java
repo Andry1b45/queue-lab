@@ -11,6 +11,7 @@ import spark.ResponseTransformer;
 import javax.servlet.http.Cookie;
 import static spark.Spark.after;
 import static spark.Spark.get;
+import static spark.route.HttpMethod.post;
 
 import java.sql.SQLException;
 
@@ -27,8 +28,9 @@ public class Application {
         StudentService studentService = new StudentService();
         //todo сделать  auth
 
-
-        get("/verify/:id", (request, response) -> {
+        /*
+        post("/verify/:id", (request, response) -> {
+            request.getCookies();
             response.type("application/json");
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS, new
@@ -36,7 +38,7 @@ public class Application {
         });
 
 
-        /*
+
         get("/auth/:name:surname:password", (req,res)->{
             Cookie result = new Cookie("SUCCESS", String.valueOf(new Student("1", req.params(":name"),
                     req.params(":surname"), req.params(":password"))));
