@@ -1,18 +1,18 @@
 package boilerplate;
 
+import api.StandardResponse;
+import api.StatusResponse;
 import com.google.gson.Gson;
 import model.entity.Student;
 import model.entity.Subject;
 import model.service.*;
-import spark.Response;
 import spark.ResponseTransformer;
-import spark.resource.Resource;
 
 import javax.servlet.http.Cookie;
-import java.lang.Enum;
 import static spark.Spark.after;
 import static spark.Spark.get;
 
+import java.sql.SQLException;
 
 //todo return response
 //todo authorization
@@ -23,21 +23,26 @@ public class Application {
 
     private static ResponseTransformer toJson = new Gson()::toJson;
 
-    public static void main(String... args) {
-
+    public static void main(String... args) throws SQLException {
+        StudentService studentService = new StudentService();
         //todo сделать  auth
 
-        get("/verify", (request, response) -> {     //todo проверк пользвателя в бд, возвращаем айдишник
-            //response.cookie("verify", new Student(null);
-            return new SubjectService().getSubject(new Student("1", "Анастасія", "Лапа",
-                    "is8113"));}, toJson);
+
+        get("/verify/:id", (request, response) -> {
+            response.type("application/json");
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS, new
+                            Gson().toJsonTree((studentService.getStudentById(request.params(":id"))))));
+        });
 
 
+        /*
         get("/auth/:name:surname:password", (req,res)->{
             Cookie result = new Cookie("SUCCESS", String.valueOf(new Student("1", req.params(":name"),
                     req.params(":surname"), req.params(":password"))));
             return result;
         });
+        */
 
 
         get("/account/api/subjects", (request, response) -> {
